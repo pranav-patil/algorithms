@@ -1,11 +1,16 @@
 package com.library.algorithms.graph;
 
-public class Edge<V extends Comparable<V>> implements Comparable<Edge<V>> {
-    private V startVertex;
-    private V endVertex;
-    private double weight;
+import com.google.common.base.MoreObjects;
+import com.google.common.collect.ComparisonChain;
 
-    public Edge(V startV, V endV, double c){
+import java.util.Objects;
+
+public class Edge<V extends Comparable<V>> implements Comparable<Edge<V>> {
+    private final V startVertex;
+    private final V endVertex;
+    private final double weight;
+
+    public Edge(final V startV, final V endV, final double c){
         this.startVertex = startV;
         this.endVertex = endV;
         weight = c;
@@ -25,49 +30,38 @@ public class Edge<V extends Comparable<V>> implements Comparable<Edge<V>> {
 
     @Override
     public String toString() {
-        return "Edge [startVertex=" + startVertex + ", endVertex=" + endVertex + ", weight=" + weight + "]";
+        return MoreObjects.toStringHelper("Edge")
+                .add("startVertex", startVertex)
+                .add("endVertex", endVertex)
+                .add("weight", weight)
+                .toString();
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (o == this) {
+    public boolean equals(Object other) {
+        if (other == this) {
             return true;
         }
-        if (!(o instanceof Edge)) {
+        if (!(other instanceof Edge)) {
             return false;
         }
-        Edge<V> edge = (Edge<V>)o;
-        return  edge.startVertex.equals(this.startVertex) &&
-                edge.endVertex.equals(this.endVertex) &&
-                edge.getWeight() == this.getWeight();
+        Edge<V> edge = (Edge<V>)other;
+        return Objects.equals(edge.startVertex, this.startVertex) &&
+               Objects.equals(edge.endVertex, this.endVertex) &&
+               Objects.equals(edge.getWeight(), this.getWeight());
     }
 
     @Override
     public int hashCode() {
-        int result = 17;
-        result = 31 * result + startVertex.hashCode();
-        result = 31 * result + endVertex.hashCode();
-        result = 31 * result + (int) weight;
-        return result;
+        return Objects.hash(startVertex, endVertex, weight);
     }
 
     @Override
     public int compareTo(Edge<V> edge) {
-
-        int result = 0;
-
-        if(this.startVertex != null) {
-            result = this.startVertex.compareTo(edge.startVertex);
-        }
-
-        if(result == 0 && this.endVertex != null) {
-            result = this.endVertex.compareTo(edge.endVertex);
-        }
-
-        if(result == 0) {
-            result = (int) (this.weight - edge.weight);
-        }
-        return result;
+        return ComparisonChain.start()
+                .compare(this.getStartVertex(), edge.getStartVertex())
+                .compare(this.getEndVertex(), edge.getEndVertex())
+                .compare(this.getWeight(), edge.getWeight())
+                .result();
     }
 }
-

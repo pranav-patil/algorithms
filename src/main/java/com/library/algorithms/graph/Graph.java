@@ -4,100 +4,77 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Graph<T extends Comparable<T>> {
-    private Map<Vertex, Set<Edge<Vertex<T>>>> adjacentList;
+    private Map<T, Set<Edge<T>>> adjacentList;
     private GraphType graphType;
 
     public enum GraphType {
         DIRECTED_GRAPH, UNDIRECTED_GRAPH;
     };
 
-    public Graph(GraphType graphType) {
+    public Graph(final GraphType graphType) {
         this.graphType = graphType;
-        adjacentList = new ConcurrentHashMap<Vertex, Set<Edge<Vertex<T>>>>();
+        adjacentList = new ConcurrentHashMap<T, Set<Edge<T>>>();
     }
 
-    public Vertex addVertex(T label) {
-        Vertex vertex = new Vertex<T>(label);
+    public T addVertex(final T vertex) {
 
         if (!adjacentList.containsKey(vertex)) {
-            adjacentList.put(vertex, new TreeSet<Edge<Vertex<T>>>());
+            adjacentList.put(vertex, new TreeSet<Edge<T>>());
         }
         return vertex;
     }
 
-    public boolean hasVertex(Vertex<T> vertex) {
+    private boolean hasVertex(final T vertex) {
         return adjacentList.containsKey(vertex);
     }
 
-    public boolean hasEdge(T from, T to) {
-        Vertex<T> fromVertex = new Vertex<T>(from);
-        Vertex<T> toVertex = new Vertex<T>(from);
+    private boolean hasEdge(final T from, final T to) {
 
-        if (!hasVertex(fromVertex) || !hasVertex(toVertex))
+        if (!hasVertex(from) || !hasVertex(to)) {
             return false;
+        }
 
-        Set<Edge<Vertex<T>>> edges = adjacentList.get(fromVertex);
-        for (Edge<Vertex<T>> edge : edges) {
-            if(edge.getEndVertex().equals(toVertex)) {
+        Set<Edge<T>> edges = adjacentList.get(from);
+        for (Edge<T> edge : edges) {
+            if(edge.getEndVertex().equals(to)) {
                 return true;
             }
         }
         return false;
     }
 
-    public void addEdge(T from, T to) {
+    public void addEdge(final T from, final T to) {
         this.addEdge(from, to, 0);
     }
 
-    public void addEdge(T from, T to, double weight) {
-        Vertex v, w;
+    public void addEdge(final T from, final T to, double weight) {
+
         if (hasEdge(from, to))
             return;
 
-        v = addVertex(from);
-        w = addVertex(to);
-        adjacentList.get(v).add(new Edge<Vertex<T>>(v, w, weight));
+        addVertex(from);
+        addVertex(to);
+        adjacentList.get(from).add(new Edge<T>(from, to, weight));
 
         if(graphType.equals(GraphType.UNDIRECTED_GRAPH)) {
-            adjacentList.get(w).add(new Edge<Vertex<T>>(w, v, weight));
+            adjacentList.get(to).add(new Edge<T>(to, from, weight));
         }
     }
 
-    public Iterable<Edge<Vertex<T>>> adjacentTo(Vertex v) {
+    public Iterable<Edge<T>> adjacentTo(final T v) {
         if (!adjacentList.containsKey(v))
-            return new TreeSet<Edge<Vertex<T>>>();
+            return new TreeSet<Edge<T>>();
         return adjacentList.get(v);
     }
 
-    public Iterable<Vertex> getVertices() {
-        return adjacentList.keySet();
-    }
-
-    public int numberOfVertices() {
-        return adjacentList.size();
-    }
-
-    public int numberOfEdges() {
-        int size = 0;
-        for (Set<Edge<Vertex<T>>> edges : adjacentList.values()) {
-            size += edges.size();
-        }
-        return size;
-    }
-
-    public Set<Edge<Vertex<T>>> getPath(T from, T to) {
-        return getPath(new Vertex<T>(from), new Vertex<T>(to));
-    }
-
-    // List of edges between 2 vertices (path doesn’t have to be optimal)
-    public Set<Edge<Vertex<T>>> getPath(Vertex<T> from, Vertex<T> to) {
-        Set<Edge<Vertex<T>>> edges = new LinkedHashSet<Edge<Vertex<T>>>();
-        Set<Vertex<T>> visited = new LinkedHashSet<Vertex<T>>();
-        Stack<Edge<Vertex<T>>> stack = new Stack<Edge<Vertex<T>>>();
-        Vertex<T> vertex = from;
+    public Set<Edge<T>> getPath(final T from, final T to) {
+        Set<Edge<T>> edges = new LinkedHashSet<Edge<T>>();
+        Set<T> visited = new LinkedHashSet<T>();
+        Stack<Edge<T>> stack = new Stack<Edge<T>>();
+        T vertex = from;
 
         do {
-            Edge<Vertex<T>> edge = null;
+            Edge<T> edge = null;
 
             if(!stack.isEmpty()) {
                 edge = stack.pop();
@@ -115,7 +92,7 @@ public class Graph<T extends Comparable<T>> {
                     return edges;
                 }
 
-                for(Edge<Vertex<T>> adjEdge : adjacentTo(vertex)) {
+                for(Edge<T> adjEdge : adjacentTo(vertex)) {
                     stack.push(adjEdge);
                 }
             }
@@ -127,13 +104,10 @@ public class Graph<T extends Comparable<T>> {
         return null;
     }
 
-    /*
-     * Returns adjacency-list representation of graph
-     */
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        for (Vertex v : adjacentList.keySet()) {
+        for (T v : adjacentList.keySet()) {
             stringBuilder.append(v).append(": ");
             for (Edge edge : adjacentList.get(v)) {
                 stringBuilder.append(edge.getEndVertex()).append(" ");
@@ -143,16 +117,16 @@ public class Graph<T extends Comparable<T>> {
         return stringBuilder.toString();
     }
 
-    public Set<Vertex<T>> breadthFirstTraversal(Vertex<T> vertex) {
-        Set<Vertex<T>> visited = new LinkedHashSet<Vertex<T>>();
-        Queue<Vertex<T>> queue = new LinkedList<Vertex<T>>();
+    public Set<T> breadthFirstTraversal(final T vertex) {
+        Set<T> visited = new LinkedHashSet<T>();
+        Queue<T> queue = new LinkedList<T>();
         queue.add(vertex);
 
         while(!queue.isEmpty()){
-            Vertex<T> v = queue.poll();
+            T v = queue.poll();
             visited.add(vertex);
-            System.out.print(v.getLabel() + " ");
-            for(Edge<Vertex<T>> adjEdge : adjacentTo(v)){
+            System.out.print(v + " ");
+            for(Edge<T> adjEdge : adjacentTo(v)){
                 if(!visited.contains(adjEdge.getEndVertex())){
                     visited.add(adjEdge.getEndVertex());
                     queue.add(adjEdge.getEndVertex());
@@ -163,19 +137,19 @@ public class Graph<T extends Comparable<T>> {
         return visited;
     }
 
-    public Set<Vertex<T>> depthFirstTraversal(Vertex<T> vertex) {
-        Set<Vertex<T>> visited = new LinkedHashSet<Vertex<T>>();
-        Stack<Vertex<T>> s = new Stack<Vertex<T>>();
+    public Set<T> depthFirstTraversal(final T vertex) {
+        Set<T> visited = new LinkedHashSet<T>();
+        Stack<T> s = new Stack<T>();
         s.push(vertex);
 
         while(!s.isEmpty()){
-            Vertex<T> v = s.pop();
+            T v = s.pop();
 
             if(!visited.contains(v)) {
                 visited.add(v);
-                System.out.print(v.getLabel() +  " ");
+                System.out.print(v +  " ");
 
-                for(Edge<Vertex<T>> adjEdge : adjacentTo(v)){
+                for(Edge<T> adjEdge : adjacentTo(v)){
                     s.push(adjEdge.getEndVertex());
                 }
             }
@@ -183,15 +157,15 @@ public class Graph<T extends Comparable<T>> {
         return visited;
     }
 
-    public void convertVertices(Function<Vertex<T>> function) {
-        for (Vertex<T> element : getVertices()) {
+    public void convertVertices(final Function<T> function) {
+        for (T element : adjacentList.keySet()) {
             function.apply(element);
         }
     }
 
-    public void convertEdges(Function<Edge<Vertex<T>>> function) {
-        for (Set<Edge<Vertex<T>>> edges : adjacentList.values()) {
-            for (Edge<Vertex<T>> element : edges) {
+    public void convertEdges(final Function<Edge<T>> function) {
+        for (Set<Edge<T>> edges : adjacentList.values()) {
+            for (Edge<T> element : edges) {
                 function.apply(element);
             }
         }
@@ -210,11 +184,10 @@ public class Graph<T extends Comparable<T>> {
         G.addEdge("G", "H");
         G.addEdge("E", "H");
 
-        Vertex vertex = new Vertex<String>("S");
         System.out.print("\nBREATH FIRST SEARCH: ");
-        G.breadthFirstTraversal(vertex);
+        G.breadthFirstTraversal("S");
         System.out.print("\nDEPTH FIRST SEARCH: ");
-        G.depthFirstTraversal(vertex);
+        G.depthFirstTraversal("S");
 
         String startVertexName = "D";
         String endVertexName = "G";
