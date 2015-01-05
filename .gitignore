@@ -1,0 +1,19 @@
+#intellij
+.idea/
+*.iml
+
+#eclipse
+.classpath
+.settings
+.project
+.checkstyle
+
+#generated output
+/logs
+target/
+
+reports/**/*
+
+*.log
+
+library/
