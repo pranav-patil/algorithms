@@ -1,11 +1,13 @@
 package com.library.algorithms.graph;
 
+import com.google.common.base.Preconditions;
+
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Graph<T extends Comparable<T>> {
-    public static final int DEFAULT_EDGE_WEIGHT = 0;
-    private Map<T, Set<Edge<T>>> adjacentList;
+
+    private final Map<T, Set<Edge<T>>> adjacentList;
     private final GraphType graphType;
 
     public enum GraphType {
@@ -18,11 +20,11 @@ public class Graph<T extends Comparable<T>> {
     }
 
     private boolean hasVertex(final T vertex) {
-        return vertex != null && adjacentList.containsKey(vertex);
+        Preconditions.checkNotNull(vertex);
+        return adjacentList.containsKey(vertex);
     }
 
     private boolean hasEdge(final T from, final T to) {
-
         if (!hasVertex(from) || !hasVertex(to)) {
             return false;
         }
@@ -36,11 +38,11 @@ public class Graph<T extends Comparable<T>> {
         return false;
     }
 
-    private Iterable<Edge<T>> adjacentTo(final T v) {
-        if (!adjacentList.containsKey(v)) {
-            return new TreeSet<Edge<T>>();
+    private Iterable<Edge<T>> adjacentTo(final T vertex) {
+        if (!hasVertex(vertex)) {
+            return Collections.emptySet();
         }
-        return adjacentList.get(v);
+        return adjacentList.get(vertex);
     }
 
     public void addVertex(final T vertex) {
@@ -50,7 +52,7 @@ public class Graph<T extends Comparable<T>> {
     }
 
     public void addEdge(final T from, final T to) {
-        this.addEdge(from, to, DEFAULT_EDGE_WEIGHT);
+        this.addEdge(from, to, Edge.DEFAULT_EDGE_WEIGHT);
     }
 
     public void addEdge(final T from, final T to, final double weight) {
@@ -70,7 +72,7 @@ public class Graph<T extends Comparable<T>> {
 
     public Set<Edge<T>> getPath(final T from, final T to) {
         Set<Edge<T>> edges = new LinkedHashSet<Edge<T>>();
-        Set<T> visited = new LinkedHashSet<T>();
+        Set<T> visited = new HashSet<T>();
         Stack<Edge<T>> stack = new Stack<Edge<T>>();
         T vertex = from;
 
@@ -85,9 +87,8 @@ public class Graph<T extends Comparable<T>> {
             if(!visited.contains(vertex)) {
                 visited.add(vertex);
 
-                if(edge != null) {
-                    edges.add(edge);
-                }
+                Preconditions.checkNotNull(edge);
+                edges.add(edge);
 
                 if(vertex.equals(to)) {
                     return edges;
@@ -119,7 +120,7 @@ public class Graph<T extends Comparable<T>> {
     }
 
     public Set<T> breadthFirstTraversal(final T vertex) {
-        Set<T> visited = new LinkedHashSet<T>();
+        Set<T> visited = new HashSet<T>();
         Queue<T> queue = new LinkedList<T>();
         queue.add(vertex);
 
@@ -139,7 +140,7 @@ public class Graph<T extends Comparable<T>> {
     }
 
     public Set<T> depthFirstTraversal(final T vertex) {
-        Set<T> visited = new LinkedHashSet<T>();
+        Set<T> visited = new HashSet<T>();
         Stack<T> s = new Stack<T>();
         s.push(vertex);
 

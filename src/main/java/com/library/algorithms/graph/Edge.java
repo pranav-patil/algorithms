@@ -6,9 +6,12 @@ import com.google.common.collect.ComparisonChain;
 import java.util.Objects;
 
 public class Edge<V extends Comparable<V>> implements Comparable<Edge<V>> {
+
     private final V startVertex;
     private final V endVertex;
     private final double weight;
+
+    public static final int DEFAULT_EDGE_WEIGHT = 0;
 
     public Edge(final V startVertex, final V endVertex, final double weight) {
         this.startVertex = startVertex;
