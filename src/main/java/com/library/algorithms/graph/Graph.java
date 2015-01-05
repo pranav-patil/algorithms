@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Graph<T extends Comparable<T>> {
+    public static final int DEFAULT_EDGE_WEIGHT = 0;
     private Map<T, Set<Edge<T>>> adjacentList;
     private final GraphType graphType;
 
@@ -49,7 +50,7 @@ public class Graph<T extends Comparable<T>> {
     }
 
     public void addEdge(final T from, final T to) {
-        this.addEdge(from, to, 0);
+        this.addEdge(from, to, DEFAULT_EDGE_WEIGHT);
     }
 
     public void addEdge(final T from, final T to, final double weight) {
@@ -122,12 +123,12 @@ public class Graph<T extends Comparable<T>> {
         Queue<T> queue = new LinkedList<T>();
         queue.add(vertex);
 
-        while(!queue.isEmpty()){
+        while(!queue.isEmpty()) {
             T v = queue.poll();
             visited.add(vertex);
             System.out.print(v + " ");
-            for(final Edge<T> adjEdge : adjacentTo(v)){
-                if(!visited.contains(adjEdge.getEndVertex())){
+            for(final Edge<T> adjEdge : adjacentTo(v)) {
+                if(!visited.contains(adjEdge.getEndVertex())) {
                     visited.add(adjEdge.getEndVertex());
                     queue.add(adjEdge.getEndVertex());
                 }
@@ -142,14 +143,14 @@ public class Graph<T extends Comparable<T>> {
         Stack<T> s = new Stack<T>();
         s.push(vertex);
 
-        while(!s.isEmpty()){
+        while(!s.isEmpty()) {
             T v = s.pop();
 
             if(!visited.contains(v)) {
                 visited.add(v);
                 System.out.print(v +  " ");
 
-                for(final Edge<T> adjEdge : adjacentTo(v)){
+                for(final Edge<T> adjEdge : adjacentTo(v)) {
                     s.push(adjEdge.getEndVertex());
                 }
             }
