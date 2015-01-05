@@ -5,7 +5,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class Graph<T extends Comparable<T>> {
     private Map<T, Set<Edge<T>>> adjacentList;
-    private GraphType graphType;
+    private final GraphType graphType;
 
     public enum GraphType {
         DIRECTED_GRAPH, UNDIRECTED_GRAPH;
@@ -16,16 +16,8 @@ public class Graph<T extends Comparable<T>> {
         adjacentList = new ConcurrentHashMap<T, Set<Edge<T>>>();
     }
 
-    public T addVertex(final T vertex) {
-
-        if (!adjacentList.containsKey(vertex)) {
-            adjacentList.put(vertex, new TreeSet<Edge<T>>());
-        }
-        return vertex;
-    }
-
     private boolean hasVertex(final T vertex) {
-        return adjacentList.containsKey(vertex);
+        return vertex != null && adjacentList.containsKey(vertex);
     }
 
     private boolean hasEdge(final T from, final T to) {
@@ -34,8 +26,8 @@ public class Graph<T extends Comparable<T>> {
             return false;
         }
 
-        Set<Edge<T>> edges = adjacentList.get(from);
-        for (Edge<T> edge : edges) {
+        final Set<Edge<T>> edges = adjacentList.get(from);
+        for (final Edge<T> edge : edges) {
             if(edge.getEndVertex().equals(to)) {
                 return true;
             }
@@ -43,14 +35,28 @@ public class Graph<T extends Comparable<T>> {
         return false;
     }
 
+    private Iterable<Edge<T>> adjacentTo(final T v) {
+        if (!adjacentList.containsKey(v)) {
+            return new TreeSet<Edge<T>>();
+        }
+        return adjacentList.get(v);
+    }
+
+    public void addVertex(final T vertex) {
+        if (!hasVertex(vertex)) {
+            adjacentList.put(vertex, new TreeSet<Edge<T>>());
+        }
+    }
+
     public void addEdge(final T from, final T to) {
         this.addEdge(from, to, 0);
     }
 
-    public void addEdge(final T from, final T to, double weight) {
+    public void addEdge(final T from, final T to, final double weight) {
 
-        if (hasEdge(from, to))
+        if (hasEdge(from, to)) {
             return;
+        }
 
         addVertex(from);
         addVertex(to);
@@ -59,12 +65,6 @@ public class Graph<T extends Comparable<T>> {
         if(graphType.equals(GraphType.UNDIRECTED_GRAPH)) {
             adjacentList.get(to).add(new Edge<T>(to, from, weight));
         }
-    }
-
-    public Iterable<Edge<T>> adjacentTo(final T v) {
-        if (!adjacentList.containsKey(v))
-            return new TreeSet<Edge<T>>();
-        return adjacentList.get(v);
     }
 
     public Set<Edge<T>> getPath(final T from, final T to) {
@@ -92,7 +92,7 @@ public class Graph<T extends Comparable<T>> {
                     return edges;
                 }
 
-                for(Edge<T> adjEdge : adjacentTo(vertex)) {
+                for(final Edge<T> adjEdge : adjacentTo(vertex)) {
                     stack.push(adjEdge);
                 }
             }
@@ -106,10 +106,10 @@ public class Graph<T extends Comparable<T>> {
 
     @Override
     public String toString() {
-        StringBuilder stringBuilder = new StringBuilder();
-        for (T v : adjacentList.keySet()) {
+        final StringBuilder stringBuilder = new StringBuilder();
+        for (final T v : adjacentList.keySet()) {
             stringBuilder.append(v).append(": ");
-            for (Edge edge : adjacentList.get(v)) {
+            for (final Edge edge : adjacentList.get(v)) {
                 stringBuilder.append(edge.getEndVertex()).append(" ");
             }
             stringBuilder.append("\n");
@@ -126,7 +126,7 @@ public class Graph<T extends Comparable<T>> {
             T v = queue.poll();
             visited.add(vertex);
             System.out.print(v + " ");
-            for(Edge<T> adjEdge : adjacentTo(v)){
+            for(final Edge<T> adjEdge : adjacentTo(v)){
                 if(!visited.contains(adjEdge.getEndVertex())){
                     visited.add(adjEdge.getEndVertex());
                     queue.add(adjEdge.getEndVertex());
@@ -149,7 +149,7 @@ public class Graph<T extends Comparable<T>> {
                 visited.add(v);
                 System.out.print(v +  " ");
 
-                for(Edge<T> adjEdge : adjacentTo(v)){
+                for(final Edge<T> adjEdge : adjacentTo(v)){
                     s.push(adjEdge.getEndVertex());
                 }
             }
@@ -158,14 +158,14 @@ public class Graph<T extends Comparable<T>> {
     }
 
     public void convertVertices(final Function<T> function) {
-        for (T element : adjacentList.keySet()) {
+        for (final T element : adjacentList.keySet()) {
             function.apply(element);
         }
     }
 
     public void convertEdges(final Function<Edge<T>> function) {
-        for (Set<Edge<T>> edges : adjacentList.values()) {
-            for (Edge<T> element : edges) {
+        for (final Set<Edge<T>> edges : adjacentList.values()) {
+            for (final Edge<T> element : edges) {
                 function.apply(element);
             }
         }

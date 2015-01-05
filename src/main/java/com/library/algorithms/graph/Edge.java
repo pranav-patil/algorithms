@@ -10,10 +10,10 @@ public class Edge<V extends Comparable<V>> implements Comparable<Edge<V>> {
     private final V endVertex;
     private final double weight;
 
-    public Edge(final V startV, final V endV, final double c){
-        this.startVertex = startV;
-        this.endVertex = endV;
-        weight = c;
+    public Edge(final V startVertex, final V endVertex, final double weight){
+        this.startVertex = startVertex;
+        this.endVertex = endVertex;
+        this.weight = weight;
     }
 
     public V getStartVertex() {
@@ -38,14 +38,14 @@ public class Edge<V extends Comparable<V>> implements Comparable<Edge<V>> {
     }
 
     @Override
-    public boolean equals(Object other) {
+    public boolean equals(final Object other) {
         if (other == this) {
             return true;
         }
         if (!(other instanceof Edge)) {
             return false;
         }
-        Edge<V> edge = (Edge<V>)other;
+        final Edge<V> edge = (Edge<V>)other;
         return Objects.equals(edge.startVertex, this.startVertex) &&
                Objects.equals(edge.endVertex, this.endVertex) &&
                Objects.equals(edge.getWeight(), this.getWeight());
