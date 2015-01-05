@@ -20,7 +20,7 @@ public class Graph<T extends Comparable<T>> {
     }
 
     private boolean hasVertex(final T vertex) {
-        Preconditions.checkNotNull(vertex);
+        Preconditions.checkNotNull(vertex, "Vertex cannot be null");
         return adjacentList.containsKey(vertex);
     }
 
@@ -71,37 +71,37 @@ public class Graph<T extends Comparable<T>> {
     }
 
     public Set<Edge<T>> getPath(final T from, final T to) {
-        Set<Edge<T>> edges = new LinkedHashSet<Edge<T>>();
-        Set<T> visited = new HashSet<T>();
-        Stack<Edge<T>> stack = new Stack<Edge<T>>();
+        Set<Edge<T>> edgesOfPath = new LinkedHashSet<Edge<T>>();
+        Set<T> verticesVisited = new HashSet<T>();
+        Stack<Edge<T>> edgesStackToVisit = new Stack<Edge<T>>();
         T vertex = from;
 
         do {
             Edge<T> edge = null;
 
-            if(!stack.isEmpty()) {
-                edge = stack.pop();
+            if(!edgesStackToVisit.isEmpty()) {
+                edge = edgesStackToVisit.pop();
                 vertex = edge.getEndVertex();
             }
 
-            if(!visited.contains(vertex)) {
-                visited.add(vertex);
+            if(!verticesVisited.contains(vertex)) {
+                verticesVisited.add(vertex);
 
-                Preconditions.checkNotNull(edge);
-                edges.add(edge);
+                Preconditions.checkNotNull(edge, "Edge cannot be null");
+                edgesOfPath.add(edge);
 
                 if(vertex.equals(to)) {
-                    return edges;
+                    return edgesOfPath;
                 }
 
                 for(final Edge<T> adjEdge : adjacentTo(vertex)) {
-                    stack.push(adjEdge);
+                    edgesStackToVisit.push(adjEdge);
                 }
             }
             else {
-                edges.remove(edge);
+                edgesOfPath.remove(edge);
             }
-        } while(!stack.isEmpty());
+        } while(!edgesStackToVisit.isEmpty());
 
         return null;
     }
@@ -120,43 +120,42 @@ public class Graph<T extends Comparable<T>> {
     }
 
     public Set<T> breadthFirstTraversal(final T vertex) {
-        Set<T> visited = new HashSet<T>();
-        Queue<T> queue = new LinkedList<T>();
-        queue.add(vertex);
+        final Set<T> verticesVisited = new HashSet<T>();
+        final Queue<T> edgesQueueToVisit = new LinkedList<T>();
+        edgesQueueToVisit.add(vertex);
 
-        while(!queue.isEmpty()) {
-            T v = queue.poll();
-            visited.add(vertex);
-            System.out.print(v + " ");
-            for(final Edge<T> adjEdge : adjacentTo(v)) {
-                if(!visited.contains(adjEdge.getEndVertex())) {
-                    visited.add(adjEdge.getEndVertex());
-                    queue.add(adjEdge.getEndVertex());
+        while(!edgesQueueToVisit.isEmpty()) {
+            final T vertexVisited = edgesQueueToVisit.poll();
+            verticesVisited.add(vertex);
+            System.out.print(vertexVisited + " ");
+            for(final Edge<T> adjEdge : adjacentTo(vertexVisited)) {
+                if(!verticesVisited.contains(adjEdge.getEndVertex())) {
+                    verticesVisited.add(adjEdge.getEndVertex());
+                    edgesQueueToVisit.add(adjEdge.getEndVertex());
                 }
             }
         }
-
-        return visited;
+        return verticesVisited;
     }
 
     public Set<T> depthFirstTraversal(final T vertex) {
-        Set<T> visited = new HashSet<T>();
-        Stack<T> s = new Stack<T>();
-        s.push(vertex);
+        final Set<T> verticesVisited = new HashSet<T>();
+        final Stack<T> edgesStackToVisit = new Stack<T>();
+        edgesStackToVisit.push(vertex);
 
-        while(!s.isEmpty()) {
-            T v = s.pop();
+        while(!edgesStackToVisit.isEmpty()) {
+            final T vertexVisited = edgesStackToVisit.pop();
 
-            if(!visited.contains(v)) {
-                visited.add(v);
-                System.out.print(v +  " ");
+            if(!verticesVisited.contains(vertexVisited)) {
+                verticesVisited.add(vertexVisited);
+                System.out.print(vertexVisited +  " ");
 
-                for(final Edge<T> adjEdge : adjacentTo(v)) {
-                    s.push(adjEdge.getEndVertex());
+                for(final Edge<T> adjEdge : adjacentTo(vertexVisited)) {
+                    edgesStackToVisit.push(adjEdge.getEndVertex());
                 }
             }
         }
-        return visited;
+        return verticesVisited;
     }
 
     public void convertVertices(final Function<T> function) {
