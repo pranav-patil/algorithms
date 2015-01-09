@@ -87,8 +87,9 @@ public class Graph<T extends Comparable<T>> {
             if(!verticesVisited.contains(vertex)) {
                 verticesVisited.add(vertex);
 
-                Preconditions.checkNotNull(edge, "Edge cannot be null");
-                edgesOfPath.add(edge);
+                if(edge != null) {
+                    edgesOfPath.add(edge);
+                }
 
                 if(vertex.equals(to)) {
                     return edgesOfPath;
@@ -172,8 +173,62 @@ public class Graph<T extends Comparable<T>> {
         }
     }
 
+    public List<T> dijkstraShortestPath(T source, T target) {
+
+        Map<T, Double> distances = getDefaultDistances(source);
+        Map<T, T> predecessors = new HashMap<T, T>();
+
+        //PriorityQueue<T> vertexQueue = new PriorityQueue<T>();
+        Queue<T> vertexQueue = new LinkedList<T>();
+        vertexQueue.add(source);
+
+        while (!vertexQueue.isEmpty()) {
+            T u = vertexQueue.poll();
+
+            for (Edge<T> e : adjacentTo(u)) {
+                T v = e.getEndVertex();
+
+                double distanceThroughU = distances.get(u) + e.getWeight();
+                if (distanceThroughU < distances.get(v)) {
+
+                    // Vertex is removed in order to makes sure that the vertex does not
+                    // exists in the priority queue before adding the vertex.
+                    // The vertex needs to be added if it does not exists in the queue.
+                    vertexQueue.remove(v);
+
+                    distances.put(v, distanceThroughU);
+                    predecessors.put(v, u);
+                    vertexQueue.add(v);
+                }
+            }
+        }
+
+        System.out.println("DIJKSTRA'S SHORTEST DISTANCE: " + distances.get(target));
+
+        List<T> path = new ArrayList<T>();
+        for (T vertex = target; vertex != null; vertex = predecessors.get(vertex)) {
+            path.add(vertex);
+        }
+        Collections.reverse(path);
+        return path;
+    }
+
+    private Map<T, Double> getDefaultDistances(T source) {
+        Map<T, Double> distanceMap = new HashMap<T, Double>();
+        for (T vertex : adjacentList.keySet()) {
+            if(vertex.equals(source)) {
+                distanceMap.put(vertex, Double.valueOf(0));
+            }
+            else {
+                distanceMap.put(vertex, Double.MAX_VALUE);
+            }
+        }
+        return distanceMap;
+    }
+
     public static void main(String[] args) {
         Graph G = new Graph(GraphType.UNDIRECTED_GRAPH);
+
         G.addEdge("A", "B");
         G.addEdge("A", "S");
         G.addEdge("S", "C");
@@ -194,6 +249,34 @@ public class Graph<T extends Comparable<T>> {
         String endVertexName = "G";
         System.out.print(String.format("\nPATH BETWEEN VERTICES: %s   %s \n", startVertexName, endVertexName));
         System.out.println(G.getPath(startVertexName, endVertexName));
+
+        dijkstraExample();
+    }
+
+    private static void dijkstraExample() {
+        Graph G = new Graph(GraphType.UNDIRECTED_GRAPH);
+
+        G.addEdge("A", "B", 2.0);
+        G.addEdge("A", "D", 7.0);
+        G.addEdge("A", "F", 12.0);
+        G.addEdge("A", "O", 2.0);
+
+        G.addEdge("B", "C", 1.0);
+        G.addEdge("B", "D", 4.0);
+        G.addEdge("B", "E", 3.0);
+        G.addEdge("B", "O", 5.0);
+
+        G.addEdge("D", "E", 1.0);
+        G.addEdge("D", "T", 5.0);
+
+        G.addEdge("F", "T", 3.0);
+
+        G.addEdge("O", "C", 4.0);
+
+        G.addEdge("C", "E", 4.0);
+        G.addEdge("E", "T", 7.0);
+
+        System.out.println(G.dijkstraShortestPath("O", "T"));
     }
 }
 
