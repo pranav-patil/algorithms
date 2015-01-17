@@ -15,5 +15,3 @@ target/
 reports/**/*
 
 *.log
-
-library/
