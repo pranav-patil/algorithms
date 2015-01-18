@@ -9,27 +9,27 @@ import java.util.List;
 public class BlockingQueue<T> {
 
     private List<T> queue = new LinkedList<T>();
-    private int  limit = 10;
+    private int limit = 10;
 
-    public BlockingQueue(int limit){
+    public BlockingQueue(int limit) {
         this.limit = limit;
     }
 
-    public synchronized void enqueue(T item) throws InterruptedException  {
-        while(this.queue.size() == this.limit) {
+    public synchronized void enqueue(T item) throws InterruptedException {
+        while (this.queue.size() == this.limit) {
             wait();
         }
-        if(this.queue.isEmpty()) {
+        if (this.queue.isEmpty()) {
             notifyAll();
         }
         this.queue.add(item);
     }
 
-    public synchronized T dequeue() throws InterruptedException{
-        while(this.queue.isEmpty()){
+    public synchronized T dequeue() throws InterruptedException {
+        while (this.queue.isEmpty()) {
             wait();
         }
-        if(this.queue.size() == this.limit){
+        if (this.queue.size() == this.limit) {
             notifyAll();
         }
 

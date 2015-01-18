@@ -25,8 +25,8 @@ public class LevenshteinDistance {
                 }
 
                 distance[(i + 1)][(j + 1)] = minimum(distance[i][(j + 1)] + 1,
-                                                     distance[(i + 1)][j] + 1,
-                                                     distance[i][j] + cost );
+                        distance[(i + 1)][j] + 1,
+                        distance[i][j] + cost);
             }
         }
 
@@ -35,11 +35,11 @@ public class LevenshteinDistance {
 
     /**
      * http://www.gettingcirrius.com/2011/06/calculating-similarity-part-3-damerau.html
+     *
      * @param source
      * @param target
      */
-    public static void damerauLevenshteinDistance(String source, String target)
-    {
+    public static void damerauLevenshteinDistance(String source, String target) {
         assert ((!source.isEmpty()) || (!target.isEmpty()));
 
         int[][] distanceMatrix = new int[source.length() + 1][target.length() + 1];
@@ -67,20 +67,20 @@ public class LevenshteinDistance {
                                 distanceMatrix[sourceIndex][targetIndex - 1] + 1,
                                 distanceMatrix[sourceIndex - 1][targetIndex - 1] + cost);
 
-                if(sourceIndex == 1 || targetIndex == 1){
+                if (sourceIndex == 1 || targetIndex == 1) {
                     continue;
                 }
 
                 //transposition check (if the current and previous
                 //character are switched around (e.g.: t[se]t and t[es]t)...
-                if(source.charAt(sourceIndex - 1) == target.charAt(targetIndex - 2) &&
-                   source.charAt(sourceIndex - 2) == target.charAt(targetIndex - 1)){
+                if (source.charAt(sourceIndex - 1) == target.charAt(targetIndex - 2) &&
+                        source.charAt(sourceIndex - 2) == target.charAt(targetIndex - 1)) {
 
-                        distanceMatrix[sourceIndex][targetIndex] = minimum(
-                                //Current cost
-                                distanceMatrix[sourceIndex][targetIndex],
-                                //Transposition
-                                distanceMatrix[sourceIndex - 2][targetIndex - 2] + cost);
+                    distanceMatrix[sourceIndex][targetIndex] = minimum(
+                            //Current cost
+                            distanceMatrix[sourceIndex][targetIndex],
+                            //Transposition
+                            distanceMatrix[sourceIndex - 2][targetIndex - 2] + cost);
                 }
             }
         }
