@@ -96,7 +96,7 @@ public class LevenshteinDistance {
     }
 
     public static void main(String[] args) {
-        System.out.println("DISTANCE: " + levenshteinDistance("kitten", "sitting"));
-        damerauLevenshteinDistance("kitten", "sitting");
+        System.out.println("DISTANCE: " + levenshteinDistance("kitten", "ikttne"));
+        damerauLevenshteinDistance("kitten", "ikttne");
     }
 }
