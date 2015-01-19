@@ -11,7 +11,7 @@ package com.library.datastructures.queue;
  *
  * Referenced from http://faculty.washington.edu/moishe/javademos/ArrayQueue.java
  */
-public class ArrayQueue<E> {
+public class ArrayQueue<E> implements Queue<E> {
 
     private static final int INITIAL_DEFAULT_CAPACITY = 10;
     private int capacity;
@@ -28,6 +28,14 @@ public class ArrayQueue<E> {
         this.elements = (E[]) new Object[capacity];
     }
 
+    public E front() {
+
+        if(isEmpty()) {
+            throw new RuntimeException("Queue Empty !");
+        }
+        return elements[0];
+    }
+
     public void enqueue(E entry) {
 
         if (rear + 1 == elements.length) {
@@ -40,12 +48,8 @@ public class ArrayQueue<E> {
 
     public E dequeue() {
         if (isEmpty()) {
-            return null;
+            throw new RuntimeException("Queue Empty !");
         } else {
-
-            if (rear == 0) {
-                System.out.println(rear);
-            }
             E value = elements[0];
 
             // shift the elements
@@ -60,8 +64,12 @@ public class ArrayQueue<E> {
         }
     }
 
-    private boolean isEmpty() {
+    public boolean isEmpty() {
         return (rear < 0);
+    }
+
+    public int size() {
+        return (rear + 1);
     }
 
     @Override

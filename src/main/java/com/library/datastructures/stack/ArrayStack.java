@@ -9,10 +9,10 @@ package com.library.datastructures.stack;
 public class ArrayStack<E> {
 
     // The actual capacity of the stack array
-    protected int capacity;
+    private int capacity;
     // index for the top of the stack
-    protected int top = -1;
-    protected E elements[];
+    private int top = -1;
+    private E elements[];
 
     public static final int CAPACITY = 10;
 
