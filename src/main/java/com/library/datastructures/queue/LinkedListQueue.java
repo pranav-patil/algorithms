@@ -20,18 +20,18 @@ public class LinkedListQueue<E> implements Queue<E> {
 
     @Override
     public E front() {
-        return front.getElement();
+        return front.element;
     }
 
     public void enqueue(E element) {
         Node<E> node = new Node<E>();
-        node.setElement(element);
-        node.setNext(null);
+        node.element = element;
+        node.next = null;
 
         if (isEmpty()) {
             front = node;
         } else {
-            rear.setNext(node);
+            rear.next = node;
         }
         rear = node;
         size++;
@@ -42,8 +42,8 @@ public class LinkedListQueue<E> implements Queue<E> {
             throw new RuntimeException("Queue is empty.");
         }
 
-        E element = front.getElement();
-        front = front.getNext();
+        E element = front.element;
+        front = front.next;
         size--;
 
         if (isEmpty()) {
@@ -62,8 +62,8 @@ public class LinkedListQueue<E> implements Queue<E> {
         Node<E> iterator = this.front;
 
         while (iterator != null) {
-            text = text + iterator.getElement();
-            iterator = iterator.getNext();
+            text = text + iterator.element;
+            iterator = iterator.next;
 
             if (iterator != null) {
                 text += ", ";

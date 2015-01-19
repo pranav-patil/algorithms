@@ -34,7 +34,7 @@ public class PriorityQueue<E extends Comparable<E>> implements Queue<E> {
 
     @Override
     public E front() {
-        if(isEmpty()) {
+        if (isEmpty()) {
             throw new RuntimeException("Queue Empty !");
         }
         int maxIndex = indexOfMaximum();

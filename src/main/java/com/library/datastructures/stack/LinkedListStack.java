@@ -30,7 +30,7 @@ public class LinkedListStack<E> {
         if (isEmpty()) {
             throw new RuntimeException("Stack is empty. ");
         }
-        return top.getElement();
+        return top.element;
     }
 
     public E pop() {
@@ -38,8 +38,8 @@ public class LinkedListStack<E> {
             throw new RuntimeException("Stack is empty. ");
         }
 
-        E element = top.getElement();
-        top = top.getNext();
+        E element = top.element;
+        top = top.next;
         size--;
         return element;
     }
@@ -50,8 +50,8 @@ public class LinkedListStack<E> {
         Node<E> iterate = top;
 
         while (iterate != null) {
-            text = text + iterate.getElement();
-            iterate = iterate.getNext();
+            text = text + iterate.element;
+            iterate = iterate.next;
 
             if (iterate != null) {
                 text += ", ";
