@@ -23,8 +23,8 @@ public class HeapSort {
         for (int i = N; i > 0; i--) {
             // Get the root element which is maximum value from the Heap.
             // Remove root element by swapping with the last element.
-            swap(arr,0, i);
-            N = N-1;
+            swap(arr, 0, i);
+            N = N - 1;
             // Again heapify to maintain the max heap property.
             maxheap(arr, 0);
         }
@@ -39,10 +39,10 @@ public class HeapSort {
      * Also parent for a given index i is floor of i/2.
      */
     public static void heapify(int arr[]) {
-        N = arr.length-1;
+        N = arr.length - 1;
         // Go from the bottom non-leaf nodes of the binary tree, hence i--.
         // The max non-leaf nodes of a binary tree with n nodes is n/2.
-        for (int i = N/2; i >= 0; i--)
+        for (int i = N / 2; i >= 0; i--)
             maxheap(arr, i);
     }
 
@@ -53,8 +53,8 @@ public class HeapSort {
      * For a given height h, there are at most [n/2^(h+1)] nodes.
      */
     public static void maxheap(int arr[], int i) {
-        int left = 2*i ; // left child of i which is 2i
-        int right = 2*i + 1; // right child of i which is 2i + 1
+        int left = 2 * i; // left child of i which is 2i
+        int right = 2 * i + 1; // right child of i which is 2i + 1
         int max = i;
 
         // Now if the left child index is obviously less than max index of array
@@ -81,7 +81,7 @@ public class HeapSort {
     }
 
     public static void main(String[] args) {
-        int [] array = {4,1,3,2,16,9,10,14,8,7};
+        int[] array = {4, 1, 3, 2, 16, 9, 10, 14, 8, 7};
         sort(array);
         System.out.println("Heap Sort: " + Arrays.toString(array));
     }
