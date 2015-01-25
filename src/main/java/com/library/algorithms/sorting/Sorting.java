@@ -119,6 +119,7 @@ public class Sorting {
 	public static void shuffle(int[] array) {
 		Random random = new Random();
 		for (int i = array.length - 1; i > 0; i--) {
+			// Generate a random number between 0 (inclusive) and the specified value (exclusive)
 			int index = random.nextInt(i + 1);
 			// Simple swap
 			int temp = array[index];
