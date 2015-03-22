@@ -315,6 +315,19 @@ public class BinarySearchTree<E extends Comparable<E>> {
         return null;
     }
 
+    public int treePathsSum(TreeNode<Integer> node, int sum) {
+        if (node == null) {
+            return 0;
+        }
+
+        int result = node.element + sum * 10;
+        if (node.left == null && node.right == null) {
+            return result;
+        }
+
+        return treePathsSum(node.left, result) + treePathsSum(node.right, result);
+    }
+
     public static void main(String[] args) {
 
         BinarySearchTree bts = new BinarySearchTree(10);

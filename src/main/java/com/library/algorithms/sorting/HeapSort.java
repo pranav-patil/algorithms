@@ -6,6 +6,7 @@ import java.util.Arrays;
  * Heap Sort
  * Ref: http://www.sanfoundry.com/java-program-implement-heap-sort/
  *      http://eddmann.com/posts/implementing-heapsort-in-java-and-c/
+ *      https://www.youtube.com/watch?v=ScF985Y4DJc
  */
 public class HeapSort {
 
@@ -53,6 +54,10 @@ public class HeapSort {
      * For a given height h, there are at most [n/2^(h+1)] nodes.
      */
     public static void maxheap(int arr[], int i) {
+
+        // represent a tree in form of an array, then left child of i is 2i
+        // while right child of i is 2i + 1
+        
         int left = 2 * i; // left child of i which is 2i
         int right = 2 * i + 1; // right child of i which is 2i + 1
         int max = i;
