@@ -328,6 +328,25 @@ public class BinarySearchTree<E extends Comparable<E>> {
         return treePathsSum(node.left, result) + treePathsSum(node.right, result);
     }
 
+    public Integer getDiameter(TreeNode<E> root) {
+        if (root == null) {
+            return 0;
+        }
+
+        int rootDiameter = getHeight(root.left) + getHeight(root.right) + 1;
+        int leftDiameter = getDiameter(root.left);
+        int rightDiameter = getDiameter(root.right);
+        return Math.max(rootDiameter, Math.max(leftDiameter, rightDiameter));
+    }
+
+    public Integer getHeight(TreeNode<E> root) {
+        if (root == null) {
+            return 0;
+        }
+
+        return Math.max(getHeight(root.left), getHeight(root.right)) + 1;
+    }
+
     public static void main(String[] args) {
 
         BinarySearchTree bts = new BinarySearchTree(10);
