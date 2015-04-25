@@ -26,7 +26,9 @@ public class BinarySearchTree<E extends Comparable<E>> {
      */
     public void insert(TreeNode<E> currentNode, E element) {
 
-        if (currentNode == null || element == null) { return; }
+        if (currentNode == null || element == null) {
+            return;
+        }
 
         // currentNode.element > element.element
         if (currentNode.element.compareTo(element) > 0) {
@@ -63,26 +65,23 @@ public class BinarySearchTree<E extends Comparable<E>> {
         TreeNode<E> temp = null;
 
         // root.element > element
-        if(root.element.compareTo(element) > 0) {
+        if (root.element.compareTo(element) > 0) {
             root.left = delete(root.left, element);
         }
         // root.element < element
-        else if(root.element.compareTo(element) < 0) {
+        else if (root.element.compareTo(element) < 0) {
             root.right = delete(root.right, element);
-        }
-        else {
-            if(root.left != null && root.right != null) {
+        } else {
+            if (root.left != null && root.right != null) {
                 // Replace with the largest element in the left subtree
                 temp = findMaximum(root.left);
                 root.element = temp.element;
                 root.left = delete(root.left, root.element);
-            }
-            else {
+            } else {
                 temp = root;
-                if(root.left == null) {
+                if (root.left == null) {
                     root = root.right;
-                }
-                else if(root.right == null) {
+                } else if (root.right == null) {
                     root = root.left;
                 }
 
@@ -94,11 +93,11 @@ public class BinarySearchTree<E extends Comparable<E>> {
     }
 
     private TreeNode<E> findMaximum(TreeNode<E> root) {
-        if(root == null) {
+        if (root == null) {
             return null;
         }
 
-        while(root.right != null) {
+        while (root.right != null) {
             root = root.right;
         }
         return root;
@@ -286,7 +285,7 @@ public class BinarySearchTree<E extends Comparable<E>> {
         // root.element > n.element
         if (root.element.compareTo(element) > 0) {
             return binarySearchRecursive(root.left, element);
-        // root.element < n.element
+            // root.element < n.element
         } else if (root.element.compareTo(element) < 0) {
             return binarySearchRecursive(root.right, element);
         }
@@ -305,7 +304,7 @@ public class BinarySearchTree<E extends Comparable<E>> {
             // currentNode.element == element
             if (currentNode.element.compareTo(element) == 0) {
                 return currentNode;
-            // currentNode.element < element
+                // currentNode.element < element
             } else if (currentNode.element.compareTo(element) < 0) {
                 currentNode = currentNode.right;
             } else {
@@ -347,6 +346,51 @@ public class BinarySearchTree<E extends Comparable<E>> {
         return Math.max(getHeight(root.left), getHeight(root.right)) + 1;
     }
 
+    /* Returns 1 if the given tree is a BST and its values are >= min and <= max,
+     * else it return 0. Max should be passed as Integer.Max, while min is 0. */
+    public static int isBinarySearchTree(TreeNode<Integer> root, int min, int max) {
+
+        /* an empty tree is BST */
+        if (root == null) {
+            return 1;
+        }
+
+        /* false if this node violates the min/max constraint */
+        if (root.element < min || root.element > max) {
+            return 0;
+        }
+
+        /* otherwise check the subtrees recursively, tightening the min or max constraint */
+        return isBinarySearchTree(root.left, min, root.element - 1) &  // Allow only distinct values
+                isBinarySearchTree(root.right, root.element + 1, max);  // Allow only distinct values
+    }
+
+    /**
+     * Traverses binary tree using In-Order Traversal and checks if the currently visited node is
+     * less than the previously visited node.
+     * http://www.geeksforgeeks.org/a-program-to-check-if-a-binary-tree-is-bst-or-not/
+     */
+    public static <E extends Comparable<E>> boolean isBinarySearchTree(TreeNode<E> root) {
+
+        TreeNode<E> prevNode = null;
+
+        // traverse the tree in inorder fashion and keep track of prev node
+        if (root != null) {
+            if (!isBinarySearchTree(root.left))
+                return false;
+
+            // Allows only distinct valued nodes
+            if (prevNode != null && (root.element.compareTo(prevNode.element) < 1)) { // root.data <= prev.data
+                return false;
+            }
+
+            prevNode = root;
+            return isBinarySearchTree(root.right);
+        }
+
+        return true;
+    }
+
     public static void main(String[] args) {
 
         BinarySearchTree bts = new BinarySearchTree(10);
@@ -375,7 +419,7 @@ public class BinarySearchTree<E extends Comparable<E>> {
         bts.levelOrder();
 
         System.out.println("\n");
-        System.out.println("\n Binary Search Recursive: "    + bts.binarySearchRecursive(10));
+        System.out.println("\n Binary Search Recursive: " + bts.binarySearchRecursive(10));
         System.out.println("\n Binary Search NonRecursive: " + bts.binarySearchNonRecursive(15));
 
         System.out.println("\n Delete Element from Binary Search Tree: 4");
@@ -383,5 +427,8 @@ public class BinarySearchTree<E extends Comparable<E>> {
 
         System.out.println("\n Pre-Order Recursive: ");
         preOrderRecursive(bts.getRoot());
+
+        System.out.println("\n" + isBinarySearchTree(bts.getRoot()));
+        System.out.println("\n" + isBinarySearchTree(bts.getRoot(), 0, Integer.MAX_VALUE));
     }
 }
